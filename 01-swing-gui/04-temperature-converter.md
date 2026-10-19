@@ -1,25 +1,27 @@
-# 4. Temperature Converter
+# 4. Celsius ↔ Fahrenheit Converter
 
-**Aim:** Convert Celsius to Fahrenheit.
+**Aim:** Convert in both directions using Swing.
 
-**Algorithm:** Read Celsius → compute F = C × 9/5 + 32 → display Fahrenheit.
+**Algorithm:** Enter temperature → choose conversion direction → apply formula → display result.
 
-**Pseudocode:** Input C → F=(C*9/5)+32 → Output F.
+**Pseudocode:** C to F: F=C*9/5+32; F to C: C=(F-32)*5/9.
 
-**Flowchart:** Start → Enter Celsius → Convert → Display Fahrenheit → Stop.
+**Flowchart:** Start → Enter temperature → Choose direction → Calculate → Display → Stop.
 
 ```java
 import javax.swing.*;
 public class TemperatureConverter {
  public static void main(String[] a) {
-  JFrame f=new JFrame("Celsius to Fahrenheit");
-  JTextField c=new JTextField(), out=new JTextField(); out.setEditable(false);
-  JButton b=new JButton("Convert");
-  JPanel p=new JPanel(); p.add(new JLabel("Celsius")); p.add(c); p.add(b); p.add(out);
-  b.addActionListener(e->{try{out.setText(""+(Double.parseDouble(c.getText())*9/5+32));}catch(Exception ex){out.setText("Invalid");}});
-  f.add(p); f.setSize(360,120); f.setDefaultCloseOperation(3); f.setVisible(true);
+  JFrame f=new JFrame("Temperature Converter");
+  JTextField in=new JTextField(7),out=new JTextField(7);out.setEditable(false);
+  JButton cf=new JButton("C to F"),fc=new JButton("F to C");
+  cf.addActionListener(e->convert(in,out,true));
+  fc.addActionListener(e->convert(in,out,false));
+  JPanel p=new JPanel();p.add(in);p.add(cf);p.add(fc);p.add(out);
+  f.add(p);f.setSize(380,120);f.setDefaultCloseOperation(3);f.setVisible(true);
  }
+ static void convert(JTextField i,JTextField o,boolean c){try{double n=Double.parseDouble(i.getText());o.setText(""+(c?n*9/5+32:(n-32)*5/9));}catch(Exception e){o.setText("Invalid input");}}
 }
 ```
 
-**Viva:** Formula is F = (C × 9/5) + 32. `setEditable(false)` prevents editing the output field.
+**Viva:** Celsius to Fahrenheit: F=(C×9/5)+32. Fahrenheit to Celsius: C=(F−32)×5/9. ActionListener handles button clicks.
