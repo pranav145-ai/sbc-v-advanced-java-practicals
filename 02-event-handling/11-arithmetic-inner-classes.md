@@ -1,28 +1,30 @@
-# 11. Arithmetic Using Inner Classes
+# 11. Arithmetic Using Named and Anonymous Inner Classes
 
-**Aim:** Perform addition using a named inner class as event handler.
+**Aim:** Perform arithmetic using named and anonymous event handlers. This compact example uses addition and demonstrates both styles.
 
-**Algorithm:** Create two fields and button → inner listener reads values → displays sum.
+**Algorithm:** Create two fields and buttons → named inner class handles Add → anonymous class handles Subtract → show results.
 
-**Pseudocode:** On click, parse a,b → show a+b.
+**Pseudocode:** On Add, display a+b; on Subtract, display a-b.
 
-**Flowchart:** Start → Enter values → Click Add → Compute sum → Display → Stop.
+**Flowchart:** Start → Enter two numbers → Choose operation → Calculate → Display result → Stop.
 
 ```java
 import javax.swing.*;
-public class ArithmeticInner {
- JTextField a=new JTextField(5), b=new JTextField(5);
+import java.awt.*;
+import java.awt.event.*;
+public class ArithmeticInner extends JFrame {
+ JTextField a=new JTextField(5),b=new JTextField(5),r=new JTextField(7);
  ArithmeticInner(){
-  JFrame f=new JFrame("Addition"); JButton add=new JButton("Add"); JLabel out=new JLabel("Result");
-  f.add(a,"North"); f.add(b,"Center"); f.add(add,"West"); f.add(out,"East");
-  add.addActionListener(new Handler(out)); f.setSize(300,120); f.setDefaultCloseOperation(3); f.setVisible(true);
+  JButton add=new JButton("Add"),sub=new JButton("Subtract");
+  add.addActionListener(new AddHandler());
+  sub.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){calc(false);}});
+  setLayout(new FlowLayout());add(a);add(b);add(add);add(sub);add(r);
+  setSize(320,130);setDefaultCloseOperation(3);setVisible(true);
  }
- class Handler implements java.awt.event.ActionListener {
-  JLabel out; Handler(JLabel l){out=l;}
-  public void actionPerformed(java.awt.event.ActionEvent e){try{out.setText(""+(Double.parseDouble(a.getText())+Double.parseDouble(b.getText())));}catch(Exception ex){out.setText("Invalid");}}
- }
+ void calc(boolean plus){try{double x=Double.parseDouble(a.getText()),y=Double.parseDouble(b.getText());r.setText(""+(plus?x+y:x-y));}catch(Exception e){r.setText("Invalid");}}
+ class AddHandler implements ActionListener {public void actionPerformed(ActionEvent e){calc(true);}}
  public static void main(String[] x){new ArithmeticInner();}
 }
 ```
 
-**Viva:** An inner class is declared inside another class. It can access the enclosing object's members.
+**Viva:** A named inner class has a declared class name. An anonymous inner class is declared and instantiated in one expression. Both can access members of the enclosing object.
