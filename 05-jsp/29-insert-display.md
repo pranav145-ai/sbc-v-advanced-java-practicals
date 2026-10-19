@@ -1,40 +1,38 @@
-# 29. Insert and Display Records
+# 29. JSP Insert Student Details and Display Records
 
-**Aim:** Insert a student through a form and display records from JSP.
+**Aim:** Insert a student into MySQL using a JSP form and display the records.
 
-**Algorithm:** Form submits ID/name/marks → server validates → PreparedStatement inserts → query and display records.
+**Algorithm:** Submit ID/name/marks → parameterized INSERT → query all rows → display table.
 
-**Pseudocode:** Read form values → parameterized INSERT → show status. Display query results separately.
+**Pseudocode:** If form submitted, insert values using PreparedStatement; then SELECT all students and render them.
 
-**Flowchart:** Start → Enter data → Validate → Insert row → Show status → Stop.
+**Flowchart:** Start → Fill form → Insert row → Fetch records → Display table → Stop.
 
-**insert.html**
-```html
-<form action="insert" method="post">
- ID <input name="id" type="number">
- Name <input name="name">
- Marks <input name="marks" type="number">
- <button>Insert</button>
+**students.jsp** (table: students_info(id, name, marks); configure MySQL driver and demo credentials)
+```jsp
+<%@ page import="java.sql.*" %>
+<form method="post">
+ ID <input name="id" type="number" required>
+ Name <input name="name" required>
+ Marks <input name="marks" type="number" required>
+ <button type="submit">Insert</button>
 </form>
-```
-
-**InsertServlet.java**
-```java
-import java.io.*;
-import java.sql.*;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
-@WebServlet("/insert")
-public class InsertServlet extends HttpServlet {
- protected void doPost(HttpServletRequest q,HttpServletResponse p)throws IOException {
-  p.setContentType("text/plain");
-  try(Connection c=DriverManager.getConnection("jdbc:mysql://localhost:3306/college","root","password");
-      PreparedStatement s=c.prepareStatement("INSERT INTO students VALUES(?,?,?)")) {
-   s.setInt(1,Integer.parseInt(q.getParameter("id"))); s.setString(2,q.getParameter("name"));
-   s.setInt(3,Integer.parseInt(q.getParameter("marks"))); s.executeUpdate(); p.getWriter().print("Inserted");
-  } catch(Exception e){p.getWriter().print("Insert failed; check values/database");}
+<%
+String id=request.getParameter("id"), name=request.getParameter("name"), marks=request.getParameter("marks");
+try(Connection c=DriverManager.getConnection("jdbc:mysql://localhost:3306/college","root","password")) {
+ if(id!=null && name!=null && marks!=null) {
+  try(PreparedStatement p=c.prepareStatement("INSERT INTO students_info VALUES(?,?,?)")) {
+   p.setInt(1,Integer.parseInt(id));p.setString(2,name);p.setInt(3,Integer.parseInt(marks));p.executeUpdate();
+   out.println("Inserted successfully");
+  } catch(Exception ex){out.println("Insert failed; check duplicate ID or input");}
  }
-}
+ try(Statement s=c.createStatement();ResultSet r=s.executeQuery("SELECT * FROM students_info")) {
+  out.println("<table border='1'><tr><th>ID</th><th>Name</th><th>Marks</th></tr>");
+  while(r.next())out.println("<tr><td>"+r.getInt(1)+"</td><td>"+r.getString(2)+"</td><td>"+r.getInt(3)+"</td></tr>");
+  out.println("</table>");
+ }
+} catch(Exception e){out.println("Database error; check connection and table");}
+%>
 ```
 
-**Viva:** PreparedStatement binds values separately from SQL. Keep database access in a servlet/DAO and use JSP to display rows; never commit real passwords.
+**Viva:** PreparedStatement binds data separately from SQL. The primary key prevents duplicate IDs. This is an exam-oriented JSP scriptlet example; MVC separates database code from presentation.
