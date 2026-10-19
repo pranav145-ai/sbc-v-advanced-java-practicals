@@ -1,28 +1,32 @@
-# 2. Registration Form
+# 2. Student Registration Form
 
-**Aim:** Collect basic user details in a Swing form.
+**Aim:** Demonstrate JTextField, JRadioButton, JComboBox, JCheckBox and ButtonGroup.
 
-**Algorithm:** Create frame → add labels and fields → add submit button → show entered details in dialog.
+**Algorithm:** Create fields → group gender radio buttons → add course and hobbies → submit and display values.
 
-**Pseudocode:** Read name/email → on Submit → display values.
+**Pseudocode:** Read form controls → build details string → show dialog.
 
-**Flowchart:** Start → Fill form → Click Submit → Display details → Stop.
+**Flowchart:** Start → Fill form → Submit → Display selected details → Stop.
 
 ```java
 import javax.swing.*;
 import java.awt.*;
 public class RegistrationForm {
  public static void main(String[] a) {
-  JFrame f=new JFrame("Registration"); f.setLayout(new GridLayout(4,2,5,5));
-  JTextField name=new JTextField(), email=new JTextField();
+  JFrame f=new JFrame("Registration"); f.setLayout(new GridLayout(6,2));
+  JTextField name=new JTextField();
+  JRadioButton m=new JRadioButton("Male"), w=new JRadioButton("Female");
+  ButtonGroup g=new ButtonGroup(); g.add(m); g.add(w);
   JComboBox<String> course=new JComboBox<>(new String[]{"CSE","IT","ENTC"});
-  f.add(new JLabel("Name")); f.add(name); f.add(new JLabel("Email")); f.add(email);
-  f.add(new JLabel("Course")); f.add(course);
-  JButton b=new JButton("Submit"); f.add(b);
-  b.addActionListener(e->JOptionPane.showMessageDialog(f,name.getText()+"\n"+email.getText()+"\n"+course.getSelectedItem()));
-  f.setSize(320,200); f.setDefaultCloseOperation(3); f.setVisible(true);
+  JCheckBox java=new JCheckBox("Java"), sports=new JCheckBox("Sports");
+  JButton b=new JButton("Submit");
+  f.add(new JLabel("Name"));f.add(name);f.add(new JLabel("Gender"));
+  JPanel gp=new JPanel();gp.add(m);gp.add(w);f.add(gp);
+  f.add(new JLabel("Course"));f.add(course);f.add(java);f.add(sports);f.add(b);
+  b.addActionListener(e->JOptionPane.showMessageDialog(f,"Name: "+name.getText()+"\nGender: "+(m.isSelected()?"Male":w.isSelected()?"Female":"Not selected")+"\nCourse: "+course.getSelectedItem()+"\nJava: "+java.isSelected()+"\nSports: "+sports.isSelected()));
+  f.setSize(380,250);f.setDefaultCloseOperation(3);f.setVisible(true);
  }
 }
 ```
 
-**Viva:** `JTextField` accepts one-line text; `JComboBox` provides a drop-down; `JOptionPane` displays standard dialogs.
+**Viva:** ButtonGroup makes radio buttons mutually exclusive. JCheckBox allows multiple choices. JComboBox provides a drop-down. JTextField accepts one-line text.
